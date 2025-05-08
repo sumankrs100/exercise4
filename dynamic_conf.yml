@@ -1,0 +1,32 @@
+http:
+  middlewares:
+    securityHeaders:
+      headers:
+        frameDeny: true
+        sslRedirect: true
+        browserXssFilter: true
+        contentTypeNosniff: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 31536000
+    
+    compress:
+      compress: {}
+      
+  routers:
+    react-app-router:
+      rule: "Host(`example.com`)"  # Replace with your domain
+      service: react-app-service
+      entryPoints:
+        - websecure
+      middlewares:
+        - securityHeaders
+        - compress
+      tls:
+        certResolver: letsencrypt
+  
+  services:
+    react-app-service:
+      loadBalancer:
+        servers:
+          - url: "http://react-app:80"
