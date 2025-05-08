@@ -1,0 +1,22 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  react-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    restart: always
+    # For development, you can use volumes to reflect changes without rebuilding:
+    # volumes:
+    #   - ./src:/app/src
+    
+  # Optionally, add other services like a backend API if needed
+  # backend:
+  #   image: your-backend-image
+  #   ports:
+  #     - "3001:3001"
+  #   environment:
+  #     - NODE_ENV=production
