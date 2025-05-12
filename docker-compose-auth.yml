@@ -1,0 +1,31 @@
+# docker-compose-auth.yml
+version: '3'
+
+services:
+  oidc-auth:
+    image: quay.io/oauth2-proxy/oauth2-proxy:latest
+    container_name: oidc-auth
+    command:
+      - --provider=oidc
+      - --client-id=your-client-id
+      - --client-secret=your-client-secret
+      - --oidc-issuer-url=https://your-keycloak-server/auth/realms/your-realm
+      - --cookie-secret=your-cookie-secret
+      - --email-domain=*
+      - --upstream=static://200
+      - --http-address=0.0.0.0:4180
+      - --redirect-url=https://webapp.your-domain.com/oauth2/callback
+      - --skip-provider-button=true
+    networks:
+      - web
+
+# Update your middleware configuration in traefik.yaml
+http:
+  middlewares:
+    keycloak-auth:
+      forwardAuth:
+        address: "http://oidc-auth:4180"
+        trustForwardHeader: true
+        authResponseHeaders:
+          - "X-Auth-User"
+          - "X-Auth-Email"
