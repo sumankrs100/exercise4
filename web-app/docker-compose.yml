@@ -1,0 +1,20 @@
+# Your web application docker-compose.yml
+version: '3'
+
+services:
+  webapp:
+    image: your-webapp-image
+    container_name: webapp
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.webapp.rule=Host(`webapp.your-domain.com`)"
+      - "traefik.http.routers.webapp.entrypoints=websecure"
+      - "traefik.http.routers.webapp.tls=true"
+      - "traefik.http.routers.webapp.middlewares=keycloak-auth@file"
+      - "traefik.http.services.webapp.loadbalancer.server.port=80" # Your app's internal port
+
+networks:
+  web:
+    external: true
