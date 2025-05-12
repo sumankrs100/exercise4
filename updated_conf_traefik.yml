@@ -1,0 +1,12 @@
+# Update your middleware configuration in traefik.yaml
+http:
+  middlewares:
+    keycloak-auth:
+      forwardAuth:
+        address: "http://oidc-auth:4180/oauth2/auth"
+        trustForwardHeader: true
+        authResponseHeaders:
+          - "X-Auth-User"
+          - "X-Auth-Email"
+          - "X-Auth-Request-Email"
+          - "X-Auth-Request-User"
