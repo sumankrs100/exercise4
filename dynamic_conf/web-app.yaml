@@ -1,0 +1,17 @@
+# dynamic_conf/web-app.yaml
+http:
+  routers:
+    webapp:
+      rule: "Host(`webapp.your-domain.com`)"
+      service: webapp-service
+      entryPoints:
+        - websecure
+      middlewares:
+        - keycloak-auth
+      tls: {}
+
+  services:
+    webapp-service:
+      loadBalancer:
+        servers:
+          - url: "http://webapp:80" # Replace with your web app's internal URL
