@@ -1,0 +1,23 @@
+# docker-compose.yml for Traefik
+version: '3'
+
+services:
+  traefik:
+    image: traefik:v3.3
+    container_name: traefik
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080" # Dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yaml:/etc/traefik/traefik.yaml
+      - ./dynamic_conf:/etc/traefik/dynamic_conf
+      - ./certs:/etc/certs
+    networks:
+      - web
+    restart: unless-stopped
+
+networks:
+  web:
+    external: true
