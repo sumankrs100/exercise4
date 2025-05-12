@@ -1,0 +1,40 @@
+# traefik.yaml
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: ":443"
+    http:
+      tls: {}
+
+api:
+  dashboard: true
+  insecure: true # Set to false in production and secure it properly
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+  file:
+    directory: "/etc/traefik/dynamic_conf"
+    watch: true
+
+# This enables the Traefik pilot for OIDC plugin (if needed)
+pilot:
+  token: "" # Optional: Add your Traefik Pilot token if using plugins
+
+# OIDC middleware configuration
+http:
+  middlewares:
+    keycloak-auth:
+      forwardAuth:
+        address: "https://your-keycloak-server/auth/realms/your-realm/protocol/openid-connect"
+        trustForwardHeader: true
+        authResponseHeaders:
+          - "Authorization"
+          - "X-Auth-User"
